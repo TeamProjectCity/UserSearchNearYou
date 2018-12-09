@@ -97,8 +97,8 @@ def index():
    if g.user:
        user = models.User.get(models.User.id == g.user._get_current_object().id)
        user_pref = models.UserPreferences.get(user=user.id)
-       search_string = 
-       results = json_classes.SearchFecther.get_data()
+       search_string = user_pref.generate_search_string()
+       results = json_classes.SearchFecther.get_data(search_string)
        return render_template('index.html', results=results)
 
    return 'Hello World!'
