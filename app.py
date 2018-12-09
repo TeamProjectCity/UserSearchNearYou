@@ -104,9 +104,17 @@ def index():
 @login_required
 def search():
     user = models.User.get(id=g.user.id)
-    user_pref = models.UserPreferences.get(user=user.id)
+    print(user.email)
+    user_pref = user.get_preferences()
     search_string = user_pref.generate_search_string()
-    results = json_classes.SearchFecther.get_data(search_string)
+    print('before test ')
+    print(user_pref.food)
+    print(user_pref.student_discount)
+    print(user_pref.clothing)
+    print(user_pref.technology)
+    print(search_string)
+    results = json_classes.SearchFetcher.get_data(search_string)
+    print(results)
     return render_template('index.html', results=results)
 
 
@@ -141,18 +149,17 @@ def register():
         return redirect(url_for('index'))
     return render_template('login.html', form=form)
 
-@app.route('/userpref<user_id>', methods=('GET', 'POST'))
+@app.route('/userpref', methods=('GET', 'POST'))
 @login_required
-def userPrferences(user_id):
-    print(user_id)
-    form = forms.PreferenceForm()
+def userPrferences():
+    user = models.User.get(id=g.user.id)
+    pref = user.get_preferences()
+    form = forms.PreferenceForm(obj=pref)
+
     if form.validate_on_submit():
-        print(user_id)
-        test = form.student_discount.data
-        q = models.UserPreferences.update(student_discount=test).where(
-            models.UserPreferences.user == user_id)
-        q.execute()
-        flash("updated", "success")
+        print("passed form")
+        form.populate_obj(obj=pref)
+        pref.save()
         return redirect(url_for('index'))
 
     return render_template("login.html", form=form)

@@ -15,9 +15,8 @@ class SearchFetcher():
         search_data = requests.get(
             'https://maps.googleapis.com/maps/api/place/nearbysearch/json?lo'
             'cation={},{}&radius=1500&feilds=formatted_address,name&type=sho'
-            'p&keyword={}&key={}'.format(search_string,
-                g.latlng[0], g.latlng[1], AUTHKEY)).json()
-
+            'p&keyword={}&key={}'.format(
+                g.latlng[0], g.latlng[1], search_string, AUTHKEY)).json()
         testArr = []
         for results in search_data['results']:
             for info in results:
@@ -35,6 +34,7 @@ class SearchFetcher():
                                                                      g.latlng[
                                                                          1]))
 
+
             return_list.append({test4.json()['candidates'][0]["name"]: [
                 test4.json()['candidates'][0]["name"],
                 test4.json()['candidates'][0][
@@ -43,4 +43,4 @@ class SearchFetcher():
 
             ]})
 
-            return return_list
+        return return_list

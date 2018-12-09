@@ -16,7 +16,8 @@ class User(UserMixin,Model):
         order_by = ('-joined_at',)
 
 
-
+    def get_preferences(self):
+        return UserPreferences.get(user = self.id)
     @classmethod
     def create_user(cls, email, password):
         try:
@@ -43,27 +44,33 @@ class UserPreferences(Model):
 
 
     def generate_search_string(self):
-        return_string = ""
+        return_string = ["Student%20Discount",
+                         "Student%20Discount,Food",
+                         "Student%20Discount,Clothing",
+                         "Student%20Discount,Technology",
+                         "Food",
+                         "Clothing",
+                         "Technology",]
         if self.student_discount:
-            return_string = "Student%20Discount"
+            return return_string[0]
         if self.food:
             if self.student_discount:
-                return_string += ",Food"
+                return return_string[1]
             else:
-                return_string = "Food"
+                return return_string[4]
         if self.clothing:
             if self.student_discount:
-                return_string += ",Clothing"
+                return return_string[2]
             else:
-                return_string = "Clothing"
+                return return_string[5]
 
         if self.technology:
             if self.student_discount:
-                return_string += ",Technology"
+                return return_string[3]
             else:
-                return_string = "Technology"
+                return return_string[6]
 
-        return return_string
+        return ""
 
 
 def initialize():

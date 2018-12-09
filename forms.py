@@ -7,12 +7,12 @@ from models import User,UserPreferences
 
 
 def one_shop_preference_only(form, field):
-    if field.data == form.food.data or field.data == form.clothing.data:
+    if field.data and form.food.data or field.data and form.clothing.data:
         raise ValidationError('you can only select one of food,'
                               'clothing or technology.')
 
 def one_shop_preference_only2(form, field):
-    if field.data == form.food.data or field.data == form.tecnology.data:
+    if field.data and form.food.data:
         raise ValidationError('you can only select one of food,'
                               'clothing or technology.')
 
@@ -51,15 +51,14 @@ class PreferenceForm(FlaskForm):
 
 
     student_discount = BooleanField(
-        'student_discount',validators=[
-            one_shop_preference_only
-        ]
+        'student_discount', validators=[
 
+        ]
 
     )
     food = BooleanField('food')
     clothing = BooleanField('clothing',validators=[
-            one_shop_preference_only
+            one_shop_preference_only2
         ])
     technology = BooleanField('technology',validators=[
             one_shop_preference_only
