@@ -6,7 +6,7 @@ from flask_login import (LoginManager, login_user, logout_user,
 
 import geocoder, requests, json
 
-import models,forms
+import models,forms,json_classes
 import googleapiclient
 from googleapiclient.discovery import build
 from httplib2 import Http
@@ -95,7 +95,11 @@ def index():
                       "formatted_address"] + " rating: " + "None")
                       """
    if g.user:
-       return
+       user = models.User.get(models.User.id == g.user._get_current_object().id)
+       user_pref = models.UserPreferences.get(user=user.id)
+       search_string = 
+       results = json_classes.SearchFecther.get_data()
+       return render_template('index.html', results=results)
 
    return 'Hello World!'
 
