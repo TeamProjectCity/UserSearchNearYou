@@ -1,4 +1,4 @@
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, TextAreaField,BooleanField
 from wtforms.validators import (DataRequired, Regexp, ValidationError, Email,
                                Length, EqualTo)
@@ -22,14 +22,33 @@ def email_exists(form, field):
         raise ValidationError('User with that email already exists.')
 
 
+class RegisterForm(FlaskForm):
+    email = StringField(
+        'Email',
+        validators=[
+            DataRequired(),
+            Email(),
+            email_exists
+        ])
+    password = PasswordField(
+        'Password',
+        validators=[
+            DataRequired(),
+            Length(min=2),
+            EqualTo('password2', message='Passwords must match')
+        ])
+    password2 = PasswordField(
+        'Confirm Password',
+        validators=[DataRequired()]
+    )
 
-class LoginForm(Form):
+class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
 
 
-class PreferenceForm(Form):
-    content = TextAreaField("What's up?", validators=[DataRequired()])
+class PreferenceForm(FlaskForm):
+
 
     student_discount = BooleanField(
         'student_discount',validators=[
@@ -46,18 +65,5 @@ class PreferenceForm(Form):
             one_shop_preference_only
         ])
 
-class RegisterForm(Form):
-    email = StringField(
-        'Email',
-        validators=[
-            DataRequired(),
-            Email(),
-        ])
-    password = PasswordField(
-        'Password',
-        validators=[
-            DataRequired(),
-            Length(min=2)],
-        password2=PasswordField(
-            'Confirm Password',
-            validators=[DataRequired()]))
+
+

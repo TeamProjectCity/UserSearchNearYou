@@ -4,7 +4,7 @@ from flask_bcrypt import check_password_hash
 from flask_login import (LoginManager, login_user, logout_user,
                          login_required, current_user)
 
-import geocoder, requests, json
+import geocoder, requests, json,request
 
 import models,forms,json_classes
 import googleapiclient
@@ -95,8 +95,9 @@ def index():
                   + test4.json()['candidates'][0][
                       "formatted_address"] + " rating: " + "None")
                       """
+   models.initialize()
 
-   return 'Hello World!'
+   return render_template('test.html')
 
 
 @app.route('/search')
@@ -126,22 +127,37 @@ def login():
                 flash("Your email or password doesn't match!", "error")
     return render_template('login.html', form=form)
 
-@app.route('/userpref', methods=('GET', 'POST'))
-@login_required
-def userPrferences():
-    form = forms.UserPreferences()
+@app.route('/register', methods=('GET', 'POST'))
+def register():
+    form = forms.RegisterForm()
     if form.validate_on_submit():
-            models.UserPreferences.update(
-            student_discount= form.student_discount.data,
-            food = form.food.data,
-            clothing = form.clothing.data,
-            technology = form.technology.data
-            ).where(models.UserPreferences.user == g.user._get_current_object())
-
-            flash("You've updated your preferences", "success")
-            return redirect(url_for('index'))
-
+        flash("you registered!", "success")
+        models.User.create_user(
+            email=form.email.data,
+            password=form.password.data
+        )
+        user = models.User.get(email=form.email.data)
+        models.UserPreferences.create(user=user.id)
+        return redirect(url_for('index'))
     return render_template('login.html', form=form)
+
+@app.route('/userpref<user_id>', methods=('GET', 'POST'))
+@login_required
+def userPrferences(user_id):
+    print(user_id)
+    form = forms.PreferenceForm()
+    if form.validate_on_submit():
+        print(user_id)
+        test = form.student_discount.data
+        q = models.UserPreferences.update(student_discount=test).where(
+            models.UserPreferences.user == user_id)
+        q.execute()
+        flash("updated", "success")
+        return redirect(url_for('index'))
+
+    return render_template("login.html", form=form)
+
+
 
 @app.route('/logout')
 @login_required
@@ -151,11 +167,8 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.errorhandler(404)
-def not_found(error):
-    return render_template('404.html'), 404
+
 
 
 if __name__ == '__main__':
-    models.initialize()
-    app.run(debug=True, host=HOST, port=80)
+    app.run()

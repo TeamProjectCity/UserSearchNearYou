@@ -4,7 +4,7 @@ from flask_bcrypt import generate_password_hash
 from flask_login import UserMixin
 from peewee import *
 
-DATABASE = SqliteDatabase('social.db')
+DATABASE = SqliteDatabase('userSearch.db')
 
 class User(UserMixin,Model):
     email = CharField(unique=True)
@@ -26,6 +26,7 @@ class User(UserMixin,Model):
                     password=generate_password_hash(password))
         except IntegrityError:
             raise ValueError("User already exists")
+
 
 
 class UserPreferences(Model):
@@ -65,11 +66,10 @@ class UserPreferences(Model):
         return return_string
 
 
-
-
-
-
 def initialize():
-    DATABASE.connect()
-    DATABASE.create_tables([User,UserPreferences], safe=True)
-    DATABASE.close()
+    with DATABASE:
+        DATABASE.create_tables([User, UserPreferences])
+
+
+
+
