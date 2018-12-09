@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ {% if current_user.is_authenticated %}
+                <a href="{{ url_for('logout') }}" class="icon-power" title="Log out">logout</a>
+                <a href="{{ url_for('userPrferences', user_id=4) }}" class="icon-power" title="Log out">pref</a>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="icon-power" title="Log in">log in</a>
+                <a href="{{ url_for('register') }}" class="icon-profile" title="Register"> register</a>
+                {% endif %}
+ <h1>helllooo</h1>
+</body>
+</html>
