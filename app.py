@@ -24,7 +24,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-login_manager.user_loader
+
+@login_manager.user_loader
 def load_user(userid):
     try:
         return models.User.get(models.User.id == userid)
@@ -94,14 +95,18 @@ def index():
                   + test4.json()['candidates'][0][
                       "formatted_address"] + " rating: " + "None")
                       """
-   if g.user:
-       user = models.User.get(models.User.id == g.user._get_current_object().id)
-       user_pref = models.UserPreferences.get(user=user.id)
-       search_string = user_pref.generate_search_string()
-       results = json_classes.SearchFecther.get_data(search_string)
-       return render_template('index.html', results=results)
 
    return 'Hello World!'
+
+
+@app.route('/search')
+@login_required
+def search():
+    user = models.User.get(id=g.user.id)
+    user_pref = models.UserPreferences.get(user=user.id)
+    search_string = user_pref.generate_search_string()
+    results = json_classes.SearchFecther.get_data(search_string)
+    return render_template('index.html', results=results)
 
 
 @app.route('/login', methods=('GET', 'POST'))
@@ -121,6 +126,22 @@ def login():
                 flash("Your email or password doesn't match!", "error")
     return render_template('login.html', form=form)
 
+@app.route('/userpref', methods=('GET', 'POST'))
+@login_required
+def userPrferences():
+    form = forms.UserPreferences()
+    if form.validate_on_submit():
+            models.UserPreferences.update(
+            student_discount= form.student_discount.data,
+            food = form.food.data,
+            clothing = form.clothing.data,
+            technology = form.technology.data
+            ).where(models.UserPreferences.user == g.user._get_current_object())
+
+            flash("You've updated your preferences", "success")
+            return redirect(url_for('index'))
+
+    return render_template('login.html', form=form)
 
 @app.route('/logout')
 @login_required
@@ -136,4 +157,5 @@ def not_found(error):
 
 
 if __name__ == '__main__':
+    models.initialize()
     app.run(debug=True, host=HOST, port=80)
