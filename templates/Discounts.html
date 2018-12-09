@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Hobbies </title>
+		<p class="loginpage"><strong> Login</strong> </p>
+		<link href="main.css" rel="stylesheet" style="text/css" />
+	</head>
+
+	<body>
+		<div class="header">
+	   <img src="GreenLogo.png" alt="Company Logo">
+			<h1> Some great discounts</h1>
+            </div>
+		<nav>
+			<ul class="Navigation"><h4>
+				<li><a href="Index.html"> Home</a></li>
+				<li><a href="Join Us.html"> Join Us  </a></li>
+				<li><a href="Discounts.html"> Discounts</a></li>
+				<li><a href="Companies.html"> Companies</a></li>
+				<li><a href="Settings.html"> Settings</a></li>
+
+			</ul></h4>
+            
+            <div class="Welcomediv">
+					<div class="SportsSlides" >
+			<a href="sports.html">
+				<img class="SportsPic" src="London1.jpg" >
+				<img class="SportsPic" src="London2.jpg" >
+				<img class="SportsPic" src="London3.jpg" >
+				<img class="SportsPic" src="London4.jpg" >
+				<img class="SportsPic" src="London5.jpg">
+			</a>
+		</div>
+		</div>
+		</nav>
+            
+            
+<script>
+var myIndex = 0;
+carousel();
+
+function carousel() {
+    var i;
+    var x = document.getElementsByClassName("SportsPic");
+    for (i = 0; i < x.length; i++) {
+       x[i].style.display = "none";  
+    }
+    myIndex++;
+    if (myIndex > x.length) {myIndex = 1}    
+    x[myIndex-1].style.display = "block";  
+    setTimeout(carousel, 2000);
+}
+</script>
+	</body>
+
+
+
+
+
+
+</html>
