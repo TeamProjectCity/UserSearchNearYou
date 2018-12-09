@@ -6,7 +6,7 @@ from oauth2client import file, client, tools
 
 AUTHKEY = "AIzaSyDxNK_Fu4JuEcP6Elc1v28nZmteG64nDyI"
 
-class SearchFecther():
+class SearchFetcher():
 
     @classmethod
     def get_data(cls,search_string):
@@ -44,10 +44,3 @@ class SearchFecther():
             ]})
 
             return return_list
-
-
-
-
-
-
-
